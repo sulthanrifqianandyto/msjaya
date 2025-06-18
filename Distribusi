@@ -1,0 +1,61 @@
+<?php
+
+/**namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Distribusi;
+use App\Models\Pelanggan;
+
+class DistribusiController extends Controller
+{
+    public function index()
+{
+    $distribusi = Distribusi::all();
+    return view('admin.distribusi.index', compact('distribusi'));
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
+        'produk' => 'required|string',
+        'tanggal' => 'required|date',
+        // tambahkan validasi lainnya sesuai field distribusi
+    ]);
+
+    $distribusi = new Distribusi();
+    $distribusi->id_pelanggan = $request->id_pelanggan;
+    $distribusi->produk = $request->produk;
+    $distribusi->tanggal = $request->tanggal;
+    $distribusi->status = 'belum'; // <-- default status
+    $distribusi->save();
+
+    return redirect()->back()->with('success', 'Distribusi berhasil ditambahkan.');
+
+}
+
+public function create()
+{
+    $pelanggan = Pelanggan::all(); // Untuk ditampilkan sebagai dropdown
+    return view('admin.distribusi.create', compact('pelanggan'));
+}
+
+public function edit($id)
+{
+    $distribusi = Distribusi::findOrFail($id);
+    $pelanggan = Pelanggan::all(); // Agar dropdown tetap tersedia
+    return view('admin.distribusi.edit', compact('distribusi', 'pelanggan'));
+}
+
+
+public function konfirmasi($id)
+{
+    $distribusi = Distribusi::findOrFail($id);
+    $distribusi->status = 'sudah';
+    $distribusi->save();
+
+    return back()->with('success', 'Distribusi telah dikonfirmasi.');
+}
+
+}
