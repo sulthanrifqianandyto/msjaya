@@ -152,4 +152,5 @@ const chartData = {
 // Render awal
 renderPieChart(chartData.labels, chartData.values);
 </script>
+
 @endsection

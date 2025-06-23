@@ -125,6 +125,7 @@
         <a href="{{ route('admin.pelanggan.index') }}" class="{{ request()->is('admin/pelanggan*') ? 'active' : '' }}">Pelanggan</a>
         <a href="{{ route('admin.bahanbaku.index') }}" class="{{ request()->is('admin/bahanbaku*') ? 'active' : '' }}">Bahan Baku</a>
         <a href="{{ route('admin.produksi.index') }}" class="{{ request()->is('admin/produksi*') ? 'active' : '' }}">Produksi</a>
+        <a href="{{ route('admin.milestone.index') }}" class="{{ request()->is('admin/milestone*') ? 'active' : '' }}">Target</a>
         <a href="{{ route('admin.distribusi.index') }}" class="{{ request()->is('admin/distribusi*') ? 'active' : '' }}">Distribusi</a>
 
         <form method="POST" action="{{ route('admin.logout') }}">

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DistribusiController;
 use App\Http\Controllers\Auth\UnifiedLoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Pelanggan\PelangganDashboardController;
+use App\Http\Controllers\Admin\MilestoneController;
 
 
 Route::middleware(['web'])->group(function () {
@@ -72,9 +73,12 @@ Route::middleware(['web'])->group(function () {
         Route::resource('bahanbaku', BahanBakuController::class);
         Route::resource('produksi', ProduksiController::class);
         Route::resource('distribusi', DistribusiController::class);
+        Route::resource('milestone', MilestoneController::class);
+        Route::get('milestone/{id}/data', [MilestoneController::class, 'data']);
+        Route::post('milestone/{id}/konfirmasi', [MilestoneController::class, 'konfirmasi'])
+        ->name('milestone.konfirmasi');
         Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
         Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
-
     });
 
     // OPTIONAL: Debug helper (hapus di production)
