@@ -31,16 +31,18 @@
         }
 
         .sidebar {
-            width: 240px;
-            background-color: var(--bg-sidebar);
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            position: fixed;
-            height: 100%;
-            transition: transform 0.3s ease;
-        }
+    width: 240px;
+    background-color: var(--bg-sidebar);
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto; /* Tambahkan ini */
+    transition: transform 0.3s ease;
+}
+
 
         .sidebar img {
             width: 160px;
@@ -126,6 +128,7 @@
         <a href="{{ route('admin.bahanbaku.index') }}" class="{{ request()->is('admin/bahanbaku*') ? 'active' : '' }}">Bahan Baku</a>
         <a href="{{ route('admin.produksi.index') }}" class="{{ request()->is('admin/produksi*') ? 'active' : '' }}">Produksi</a>
         <a href="{{ route('admin.milestone.index') }}" class="{{ request()->is('admin/milestone*') ? 'active' : '' }}">Target</a>
+        <a href="{{ route('admin.pesanan.index') }}" class="{{ request()->is('admin/pesanan*') ? 'active' : '' }}">Pesanan</a>
         <a href="{{ route('admin.distribusi.index') }}" class="{{ request()->is('admin/distribusi*') ? 'active' : '' }}">Distribusi</a>
 
         <form method="POST" action="{{ route('admin.logout') }}">

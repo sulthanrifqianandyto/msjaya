@@ -8,19 +8,19 @@
         activeSlide: 0,
         slides: [
         {
-                image: '{{ asset('images/banner2.jpg') }}',
+                image: '{{ asset('images/p1.jpg') }}',
                 title: 'Kualitas Terbaik',
                 description: 'Kami menggunakan padi berkualitas untuk memproduksi beras yang terbaik.'
             },
             
             {
-                image: '{{ asset('images/banner3.jpg') }}',
+                image: '{{ asset('images/p1.jpg') }}',
                 title: 'Mitra Tepercaya',
                 description: 'MS Jaya adalah mitra industri andalan berbagai petani.'
             },
 
             {
-                image: '{{ asset('images/banner1.jpg') }}',
+                image: '{{ asset('images/p1.jpg') }}',
                 title: 'Distribusi Tepat Waktu',
                 description: 'Kami menjamin pengiriman barang Anda selalu tepat waktu.'
             },

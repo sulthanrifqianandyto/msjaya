@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Distribusi;
+use App\Models\Pesanan;
 
 class PelangganDashboardController extends Controller
 {
@@ -13,25 +13,25 @@ class PelangganDashboardController extends Controller
         // Ambil pelanggan yang sedang login
         $pelanggan = Auth::guard('web')->user();
 
-        // Ambil distribusi berdasarkan id_pelanggan
-        $distribusi = Distribusi::where('id_pelanggan', $pelanggan->id_pelanggan)->get();
+        // Ambil pesanan berdasarkan id_pelanggan
+        $pesanan = Pesanan::where('pelanggan_id', $pelanggan->id_pelanggan)->orderBy('created_at', 'desc')->get();
 
-        return view('pelanggan.dashboard', compact('distribusi'));
+    return view('pelanggan.dashboard', compact('pesanan'));
     }
 
     public function konfirmasi($id)
 {
-    $distribusi = Distribusi::findOrFail($id);
+    $pesanan = Pesanan::findOrFail($id);
 
-    // Validasi kepemilikan distribusi
-    if ($distribusi->id_pelanggan !== Auth::guard('web')->user()->id_pelanggan) {
+    // Validasi kepemilikan pesanan
+    if ($pesanan->id_pelanggan !== Auth::guard('web')->user()->id_pelanggan) {
         abort(403, 'Akses ditolak');
     }
 
-    $distribusi->status = 'sudah';
-    $distribusi->save();
+    $pesanan->status = 'sudah';
+    $pesanan->save();
 
-    return redirect()->back()->with('success', 'Distribusi berhasil dikonfirmasi.');
+    return redirect()->back()->with('success', 'pesanan berhasil dikonfirmasi.');
 }
 
 }

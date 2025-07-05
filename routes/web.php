@@ -14,6 +14,10 @@ use App\Http\Controllers\Auth\UnifiedLoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Pelanggan\PelangganDashboardController;
 use App\Http\Controllers\Admin\MilestoneController;
+use App\Http\Controllers\PesananController;
+use App\Http\Controllers\Admin\AdminPesananController;
+
+
 
 
 Route::middleware(['web'])->group(function () {
@@ -41,7 +45,9 @@ Route::middleware(['web'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        Route::post('/konfirmasi-distribusi/{id}', [PelangganDashboardController::class, 'konfirmasi'])->name('distribusi.konfirmasi');
+        Route::get('/pesanan/create', [PesananController::class, 'create'])->name('pesanan.create');
+        Route::post('/pesanan', [PesananController::class, 'store'])->name('pesanan.store');
+        Route::post('/pesanan/{id}/konfirmasi', [PesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
 
         Route::put('/password/update', function (Request $request) {
             $request->validate([
@@ -77,6 +83,9 @@ Route::middleware(['web'])->group(function () {
         Route::get('milestone/{id}/data', [MilestoneController::class, 'data']);
         Route::post('milestone/{id}/konfirmasi', [MilestoneController::class, 'konfirmasi'])
         ->name('milestone.konfirmasi');
+        Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('pesanan.index');
+        Route::post('/pesanan/{id}/konfirmasi', [AdminPesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
+        Route::post('/pesanan/{id}/kirim', [AdminPesananController::class, 'kirim'])->name('pesanan.kirim');
         Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
         Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
     });
