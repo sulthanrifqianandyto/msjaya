@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pesanan;
 use App\Models\Distribusi;
 use Illuminate\Http\Request;
+use App\Notifications\StatusPesananBerubah;
 
 class AdminPesananController extends Controller
 {
@@ -29,8 +30,10 @@ class AdminPesananController extends Controller
     'status' => 'disiapkan',
 ]);
 
-
-
+  // ✅ Kirim notifikasi ke pelanggan
+    if ($pesanan->pelanggan) {
+        $pesanan->pelanggan->notify(new StatusPesananBerubah($pesanan));
+    }
         return back()->with('success', 'Pesanan dikonfirmasi dan masuk distribusi.');
     }
 
@@ -39,6 +42,7 @@ class AdminPesananController extends Controller
         $pesanan = Pesanan::findOrFail($id);
 
         $pesanan->update(['status' => 'dikirim']);
+        $pesanan->pelanggan->notify(new StatusPesananBerubah($pesanan));
 
         $distribusi = Distribusi::where('pesanan_id', $pesanan->id_pesanan)->first();
         if ($distribusi) {

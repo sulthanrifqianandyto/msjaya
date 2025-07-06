@@ -24,7 +24,7 @@ class Pesanan extends Model
 
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class);
+            return $this->belongsTo(\App\Models\Pelanggan::class, 'pelanggan_id', 'id_pelanggan');
     }
     public function distribusi()
 {

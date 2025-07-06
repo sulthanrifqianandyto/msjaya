@@ -15,8 +15,13 @@ class PelangganDashboardController extends Controller
 
         // Ambil pesanan berdasarkan id_pelanggan
         $pesanan = Pesanan::where('pelanggan_id', $pelanggan->id_pelanggan)->orderBy('created_at', 'desc')->get();
+ // Ambil notifikasi pelanggan
+    $notifications = $pelanggan->notifications;
 
-    return view('pelanggan.dashboard', compact('pesanan'));
+    // Tandai semua notifikasi sebagai dibaca (opsional)
+    $pelanggan->unreadNotifications->markAsRead();
+
+    return view('pelanggan.dashboard', compact('pesanan', 'notifications'));
     }
 
     public function konfirmasi($id)

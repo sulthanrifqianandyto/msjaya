@@ -139,6 +139,26 @@
 
     <div class="main-content">
         <div class="card">
+            
+            @php
+    $admin = auth('admin')->user();
+    $unreadCount = $admin ? $admin->unreadNotifications->count() : 0;
+@endphp
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; color: #14532D;">@yield('title')</h2>
+    <div style="position: relative;">
+        <a href="{{ route('notifikasi.index') }}" style="color: #14532D; text-decoration: none; position: relative;">
+            🔔
+            @if ($unreadCount > 0)
+                <span style="position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 9999px; padding: 2px 6px; font-size: 0.75rem;">
+                    {{ $unreadCount }}
+                </span>
+            @endif
+        </a>
+    </div>
+</div>
+
             @yield('content')
         </div>
     </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\StatusPesananBerubah;
 
 
 
@@ -54,10 +55,19 @@ class PesananController extends Controller
                 'status' => 'diterima',
                 'bukti_foto' => $path,
             ]);
+                        // Kirim notifikasi ke admin
+            $admins = \App\Models\Admin::all();
+            foreach ($admins as $admin) {
+                $admin->notify(new StatusPesananBerubah($pesanan));
+}
+
+            // Kirim notifikasi ke pelanggan sendiri
+            $pesanan->pelanggan->notify(new StatusPesananBerubah($pesanan));
         }
     \App\Models\Distribusi::where('pesanan_id', $pesanan->id_pesanan)
         ->update(['status' => 'diterima']);
         return redirect()->route('dashboard')->with('success', 'Pesanan berhasil dikonfirmasi dan bukti diterima.');
 
     }
+    
 }

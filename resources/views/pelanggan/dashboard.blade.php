@@ -28,6 +28,17 @@
                     + Buat Pesanan Baru
                 </a>
             </div>
+            
+    @if ($notifications->count())
+        <div class="bg-white p-4 sm:p-6 shadow rounded-lg">
+            <h3 class="text-green-700 font-bold text-base sm:text-lg mb-3">Notifikasi</h3>
+            @foreach ($notifications as $note)
+                <div class="bg-blue-100 text-blue-800 px-4 py-2 mb-2 rounded shadow text-sm">
+                    {{ $note->data['message'] }} <span class="text-gray-500">({{ $note->created_at->diffForHumans() }})</span>
+                </div>
+            @endforeach
+        </div>
+    @endif
 
             <!-- Data Pesanan -->
             @if (isset($pesanan) && count($pesanan) > 0)
