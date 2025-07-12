@@ -38,17 +38,31 @@ class AdminPesananController extends Controller
     }
 
     public function kirim($id)
-    {
-        $pesanan = Pesanan::findOrFail($id);
+{
+    $pesanan = \App\Models\Pesanan::with('pelanggan')->findOrFail($id);
 
-        $pesanan->update(['status' => 'dikirim']);
-        $pesanan->pelanggan->notify(new StatusPesananBerubah($pesanan));
+    // Update status pesanan
+    $pesanan->update(['status' => 'dikirim']);
 
-        $distribusi = Distribusi::where('pesanan_id', $pesanan->id_pesanan)->first();
-        if ($distribusi) {
-            $distribusi->update(['status' => 'dikirim']);
-        }
-
-        return back()->with('success', 'Pesanan telah dikirim.');
+    // Update status distribusi juga
+    $distribusi = \App\Models\Distribusi::where('pesanan_id', $pesanan->id_pesanan)->first();
+    if ($distribusi) {
+        $distribusi->update(['status' => 'dikirim']);
     }
+
+    // Kirim notifikasi ke pelanggan dengan status yang sudah diperbarui
+    $pesanan->refresh(); // pastikan data terbaru dari database
+    $pesanan->pelanggan?->notify(new \App\Notifications\StatusPesananBerubah($pesanan));
+
+    return back()->with('success', 'Pesanan telah dikirim.');
+}
+
+
+    public function show($id)
+{
+    $pesanan = \App\Models\Pesanan::with('pelanggan')->findOrFail($id);
+    return view('admin.pesanan.show', compact('pesanan'));
+}
+
+
 }

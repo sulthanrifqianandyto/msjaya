@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\StatusPesananBerubah;
 
@@ -26,7 +26,7 @@ class PesananController extends Controller
         'alamat' => 'required|string',
     ]);
 
-    Pesanan::create([
+    $pesanan = Pesanan::create([
         'pelanggan_id' => Auth::user()->id_pelanggan, // pakai default karena guard-nya 'web'
         'item' => $request->item,
         'kuantitas' => $request->kuantitas,
@@ -34,8 +34,14 @@ class PesananController extends Controller
         'status' => 'menunggu',
     ]);
 
-    return redirect()->route('dashboard')->with('success', 'Pesanan berhasil dibuat.');
+    $admins = \App\Models\Admin::all(); // Mengambil semua admin
+
+foreach ($admins as $admin) {
+    $admin->notify(new StatusPesananBerubah($pesanan));
 }
+
+
+    return redirect()->route('dashboard')->with('success', 'Pesanan berhasil dibuat.');}
     public function create()
         {
             return view('pelanggan.pesanan.create');

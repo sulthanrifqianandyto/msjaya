@@ -16,6 +16,7 @@ use App\Http\Controllers\Pelanggan\PelangganDashboardController;
 use App\Http\Controllers\Admin\MilestoneController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\Admin\AdminPesananController;
+use App\Http\Controllers\NotifikasiController;
 
 
 
@@ -87,6 +88,8 @@ Route::middleware(['web'])->group(function () {
         Route::post('/pesanan/{id}/konfirmasi', [AdminPesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
         Route::post('/pesanan/{id}/kirim', [AdminPesananController::class, 'kirim'])->name('pesanan.kirim');
         Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
+        Route::get('/pesanan/{id}', [AdminPesananController::class, 'show'])->name('pesanan.show');
+        Route::get('/notifikasi', [NotifikasiController::class, 'adminIndex'])->name('notifikasi.index');
         Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
     });
 
@@ -104,4 +107,6 @@ Route::middleware(['web'])->group(function () {
         return session('check');
     });
     
+    Route::delete('/notifikasi/hapus', [NotifikasiController::class, 'hapusLama'])->name('notifikasi.bersihkan');
+
 });

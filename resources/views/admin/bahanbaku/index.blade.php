@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Bahan Baku')
+@section('title', 'Bahan Baku')
 
 @section('content')
 <h2 style="margin-bottom: 1rem; color: #14532D;">Data Bahan Baku</h2>

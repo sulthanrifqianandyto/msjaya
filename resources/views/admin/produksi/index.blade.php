@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Produksi')
+@section('title', ' Produksi')
 
 @section('content')
 <h2 style="margin-bottom: 1rem; color: #14532D;">Data Produksi</h2>
