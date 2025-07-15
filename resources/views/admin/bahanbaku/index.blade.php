@@ -24,7 +24,6 @@
             <tr>
                 <th style="padding: 0.75rem; text-align: left;">Nama Bahan</th>
                 <th style="padding: 0.75rem; text-align: left;">Stok</th>
-                <th style="padding: 0.75rem; text-align: left;">Satuan</th>
                 <th style="padding: 0.75rem; text-align: left;">Tanggal Masuk</th>
                 <th style="padding: 0.75rem; text-align: left;">Aksi</th>
             </tr>
@@ -33,8 +32,7 @@
             @forelse ($bahanbaku as $item)
                 <tr style="border-bottom: 1px solid #A3B18A;">
                     <td style="padding: 0.75rem;">{{ $item->nama_bahan }}</td>
-                    <td style="padding: 0.75rem;">{{ $item->stok }}</td>
-                    <td style="padding: 0.75rem;">{{ $item->satuan }}</td>
+                    <td style="padding: 0.75rem;">{{ $item->stok }} kg</td>
                     <td style="padding: 0.75rem;">{{ $item->tanggal_masuk }}</td>
                     <td style="padding: 0.75rem;">
                         <a href="{{ route('admin.bahanbaku.edit', $item->id_bahan) }}"
@@ -45,7 +43,7 @@
                         <form action="{{ route('admin.bahanbaku.destroy', $item->id_bahan) }}" method="POST" style="display:inline;">
                             @csrf @method('DELETE')
                             <button onclick="return confirm('Yakin ingin menghapus bahan ini?')" 
-                                        style="color: #D32F2F; background: none; border: none; cursor: pointer; font-weight: bold;">
+                                    style="color: #D32F2F; background: none; border: none; cursor: pointer; font-weight: bold;">
                                 Hapus
                             </button>
                         </form>
@@ -53,7 +51,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" style="padding: 1rem; text-align: center; color: #666;">
+                    <td colspan="4" style="padding: 1rem; text-align: center; color: #666;">
                         Tidak ada data bahan baku.
                     </td>
                 </tr>

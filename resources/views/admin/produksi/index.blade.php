@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', ' Produksi')
+@section('title', 'Produksi')
 
 @section('content')
 <h2 style="margin-bottom: 1rem; color: #14532D;">Data Produksi</h2>
@@ -24,7 +24,6 @@
             <tr>
                 <th style="padding: 0.75rem; text-align: left;">Nama Produk</th>
                 <th style="padding: 0.75rem; text-align: left;">Stok</th>
-                <th style="padding: 0.75rem; text-align: left;">Satuan</th>
                 <th style="padding: 0.75rem; text-align: left;">Tanggal Produksi</th>
                 <th style="padding: 0.75rem; text-align: left;">Aksi</th>
             </tr>
@@ -33,8 +32,7 @@
             @forelse ($produksi as $item)
                 <tr style="border-bottom: 1px solid #A3B18A;">
                     <td style="padding: 0.75rem;">{{ $item->nama_produk }}</td>
-                    <td style="padding: 0.75rem;">{{ $item->stok }}</td>
-                    <td style="padding: 0.75rem;">{{ $item->satuan }}</td>
+                    <td style="padding: 0.75rem;">{{ $item->stok }} kg</td>
                     <td style="padding: 0.75rem;">{{ $item->tanggal_produksi }}</td>
                     <td style="padding: 0.75rem;">
                         <a href="{{ route('admin.produksi.edit', $item->id_produksi) }}"
@@ -44,7 +42,7 @@
                         <form action="{{ route('admin.produksi.destroy', $item->id_produksi) }}" method="POST" style="display:inline;">
                             @csrf @method('DELETE')
                             <button onclick="return confirm('Yakin ingin menghapus data ini?')"
-                                        style="color: #D32F2F; background: none; border: none; cursor: pointer; font-weight: bold;">
+                                    style="color: #D32F2F; background: none; border: none; cursor: pointer; font-weight: bold;">
                                 Hapus
                             </button>
                         </form>
@@ -52,7 +50,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" style="padding: 1rem; text-align: center; color: #666;">
+                    <td colspan="4" style="padding: 1rem; text-align: center; color: #666;">
                         Tidak ada data produksi.
                     </td>
                 </tr>

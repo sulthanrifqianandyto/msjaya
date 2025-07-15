@@ -10,7 +10,7 @@ class ProduksiController extends Controller
 {
     public function index()
     {
-                $produksi = \App\Models\Produksi::all();
+                $produksi = \App\Models\Produksi::orderBy('created_at', 'desc')->get();
         return view('admin.produksi.index', compact('produksi'));
     }
 
@@ -20,10 +20,17 @@ class ProduksiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Produksi::create($request->all());
-        return redirect()->route('admin.produksi.index')->with('success', 'Data produksi berhasil ditambahkan.');
-    }
+{
+    $request->validate([
+        'nama_produk' => 'required|in:beras organik,beras medium,beras premium',
+        'stok' => 'required|numeric|min:0',
+        'tanggal_produksi' => 'required|date',
+    ]);
+
+    Produksi::create($request->only(['nama_produk', 'stok', 'tanggal_produksi']));
+
+    return redirect()->route('admin.produksi.index')->with('success', 'Data produksi berhasil ditambahkan.');
+}
 
     public function edit($id)
     {
@@ -32,19 +39,18 @@ class ProduksiController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_produk' => 'required|string',
-            'stok' => 'required|integer',
-            'satuan' => 'required|string',
-            'tanggal_produksi' => 'required|date',
-        ]);
+{
+    $request->validate([
+        'nama_produk' => 'required|in:beras organik,beras medium,beras premium',
+        'stok' => 'required|numeric|min:0',
+        'tanggal_produksi' => 'required|date',
+    ]);
 
-        $produksi = Produksi::findOrFail($id);
-        $produksi->update($request->all());
+    $produksi = Produksi::findOrFail($id);
+    $produksi->update($request->only(['nama_produk', 'stok', 'tanggal_produksi']));
 
-        return redirect()->route('admin.produksi.index')->with('success', 'Data produksi berhasil diperbarui.');
-    }
+    return redirect()->route('admin.produksi.index')->with('success', 'Data produksi berhasil diperbarui.');
+}
 
     public function destroy($id)
     {

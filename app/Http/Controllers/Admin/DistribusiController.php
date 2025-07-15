@@ -11,10 +11,13 @@ class DistribusiController extends Controller
 {
     public function index()
 {
-    // Ambil semua distribusi dan load relasi pelanggan
-    $distribusi = Distribusi::with('pelanggan')->get();
+    $distribusi = Distribusi::with('pelanggan')
+        ->orderBy('tanggal_distribusi', 'desc')
+        ->get();
+
     return view('admin.distribusi.index', compact('distribusi'));
 }
+
 
 public function store(Request $request)
 {

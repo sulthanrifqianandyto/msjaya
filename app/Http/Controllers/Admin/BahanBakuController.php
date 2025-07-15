@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\BahanBaku;
 
 class BahanBakuController extends Controller
 {
-        protected $fillable = ['nama_bahan', 'stok', 'satuan', 'tanggal_masuk']; // atau kolom lain yang kamu pakai
-
     public function index()
     {
-        $bahanbaku = \App\Models\BahanBaku::all();
+        // Urutkan berdasarkan tanggal masuk terbaru
+        $bahanbaku = BahanBaku::orderBy('tanggal_masuk', 'desc')->get();
         return view('admin.bahanbaku.index', compact('bahanbaku'));
     }
 
@@ -22,13 +22,20 @@ class BahanBakuController extends Controller
 
     public function store(Request $request)
     {
-    \App\Models\BahanBaku::create($request->all());
-    return redirect()->route('admin.bahanbaku.index')->with('success', 'Bahanbaku berhasil ditambahkan.');
+        $request->validate([
+            'nama_bahan' => 'required|string',
+            'stok' => 'required|numeric|min:0',
+            'tanggal_masuk' => 'required|date',
+        ]);
+
+        BahanBaku::create($request->only(['nama_bahan', 'stok', 'tanggal_masuk']));
+
+        return redirect()->route('admin.bahanbaku.index')->with('success', 'Bahan baku berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $bahanbaku = \App\Models\Bahanbaku::findOrFail($id);
+        $bahanbaku = BahanBaku::findOrFail($id);
         return view('admin.bahanbaku.edit', compact('bahanbaku'));
     }
 
@@ -36,20 +43,19 @@ class BahanBakuController extends Controller
     {
         $request->validate([
             'nama_bahan' => 'required|string',
-            'stok' => 'required|integer',
-            'satuan' => 'required|string',
+            'stok' => 'required|numeric|min:0',
             'tanggal_masuk' => 'required|date',
         ]);
 
-        $bahanbaku = \App\Models\Bahanbaku::findOrFail($id);
-        $bahanbaku->update($request->all());
+        $bahanbaku = BahanBaku::findOrFail($id);
+        $bahanbaku->update($request->only(['nama_bahan', 'stok', 'tanggal_masuk']));
 
         return redirect()->route('admin.bahanbaku.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-                $bahanbaku = \App\Models\Bahanbaku::findOrFail($id);
+        $bahanbaku = BahanBaku::findOrFail($id);
         $bahanbaku->delete();
 
         return redirect()->route('admin.bahanbaku.index')->with('success', 'Data berhasil dihapus.');

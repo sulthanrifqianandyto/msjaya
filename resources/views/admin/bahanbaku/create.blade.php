@@ -16,15 +16,12 @@
         </div>
 
         <div style="margin-bottom: 1rem;">
-            <label style="display:block; font-weight: bold; color: #111111;">Stok</label>
-            <input type="number" name="stok" class="form-control"
-                   style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px; background-color: #ffffff;" required>
-        </div>
-
-        <div style="margin-bottom: 1rem;">
-            <label style="display:block; font-weight: bold; color: #111111;">Satuan</label>
-            <input type="text" name="satuan" class="form-control"
-                   style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px; background-color: #ffffff;" required>
+            <label style="display:block; font-weight: bold; color: #111111;">Stok (kg)</label>
+            <div style="display: flex; align-items: center;">
+                <input type="number" name="stok" step="0.01" min="0" class="form-control"
+                       style="flex: 1; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px 0 0 6px; background-color: #ffffff;" required>
+                <span style="background-color: #14532D; color: #fff; padding: 0.5rem 1rem; border-radius: 0 6px 6px 0;">kg</span>
+            </div>
         </div>
 
         <div style="margin-bottom: 1.5rem;">

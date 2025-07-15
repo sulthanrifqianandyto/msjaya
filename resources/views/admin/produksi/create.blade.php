@@ -11,21 +11,24 @@
 
         <div style="margin-bottom: 1rem;">
             <label style="display:block; font-weight: bold; color: #14532D;">Nama Produk</label>
-            <input type="text" name="nama_produk" class="form-control"
-                   style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;" required>
+            <select name="nama_produk" class="form-control"
+                    style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;" required>
+                <option value="">-- Pilih Produk --</option>
+                <option value="beras organik">Beras Organik</option>
+                <option value="beras medium">Beras Medium</option>
+                <option value="beras premium">Beras Premium</option>
+            </select>
         </div>
 
         <div style="margin-bottom: 1rem;">
-            <label style="display:block; font-weight: bold; color: #14532D;">Stok</label>
-            <input type="number" name="stok" class="form-control"
-                   style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;" required>
-        </div>
+    <label style="display:block; font-weight: bold; color: #14532D;">Stok (kg)</label>
+    <div style="display: flex; align-items: center;">
+        <input type="number" name="stok" step="0.01" min="0" value="{{ old('stok', $produksi->stok ?? '') }}"
+               style="flex: 1; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px 0 0 6px;" required>
+        <span style="background-color: #14532D; color: #fff; padding: 0.5rem 1rem; border-radius: 0 6px 6px 0;">kg</span>
+    </div>
+</div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display:block; font-weight: bold; color: #14532D;">Satuan</label>
-            <input type="text" name="satuan" class="form-control"
-                   style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;" required>
-        </div>
 
         <div style="margin-bottom: 1.5rem;">
             <label style="display:block; font-weight: bold; color: #14532D;">Tanggal Produksi</label>
