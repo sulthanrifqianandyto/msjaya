@@ -12,14 +12,14 @@ class Pesanan extends Model
     protected $table = 'pesanan';
     protected $primaryKey = 'id_pesanan';
 
-    protected $fillable = [
-    'pelanggan_id',
-    'item',
-    'kuantitas',
-    'alamat',
-    'status',
-    'bukti_foto', // ← tambahkan ini
+    // App\Models\Pesanan.php
+
+protected $fillable = [
+    'pelanggan_id', 'item', 'kuantitas', 'alamat', 'status',
+    'provinsi_id', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id'
 ];
+
+
 
 
     public function pelanggan()
@@ -30,6 +30,7 @@ class Pesanan extends Model
 {
     return $this->hasOne(Distribusi::class, 'pesanan_id');
 }
+
 
 }
 

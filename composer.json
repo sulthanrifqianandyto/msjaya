@@ -12,6 +12,13 @@
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1"
     },
+    "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/farindra/Laravel-Excel"
+    }
+],
+
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.3",

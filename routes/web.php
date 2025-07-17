@@ -49,6 +49,11 @@ Route::middleware(['web'])->group(function () {
         Route::get('/pesanan/create', [PesananController::class, 'create'])->name('pesanan.create');
         Route::post('/pesanan', [PesananController::class, 'store'])->name('pesanan.store');
         Route::post('/pesanan/{id}/konfirmasi', [PesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
+        // Route untuk dropdown lokal dinamis
+        Route::get('/wilayah/kabupaten', [\App\Http\Controllers\WilayahController::class, 'getKabupaten']);
+        Route::get('/wilayah/kecamatan', [\App\Http\Controllers\WilayahController::class, 'getKecamatan']);
+        Route::get('/wilayah/kelurahan', [\App\Http\Controllers\WilayahController::class, 'getKelurahan']);
+
 
         Route::put('/password/update', function (Request $request) {
             $request->validate([

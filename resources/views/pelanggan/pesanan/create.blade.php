@@ -28,6 +28,37 @@
                                class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
                     </div>
 
+                    <!-- Dropdown Wilayah Lokal -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="provinsi_id" class="block text-sm font-medium text-gray-700">Provinsi</label>
+                            <select id="provinsi" name="provinsi_id" class="form-select w-full" required>
+                                <option value="">-- Pilih Provinsi --</option>
+                                @foreach ($provinsis as $prov)
+                                    <option value="{{ $prov->id }}">{{ $prov->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="kabupaten_id" class="block text-sm font-medium text-gray-700">Kabupaten</label>
+                            <select id="kabupaten" name="kabupaten_id" class="form-select w-full" required>
+                                <option value="">-- Pilih Kabupaten --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="kecamatan_id" class="block text-sm font-medium text-gray-700">Kecamatan</label>
+                            <select id="kecamatan" name="kecamatan_id" class="form-select w-full" required>
+                                <option value="">-- Pilih Kecamatan --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="kelurahan_id" class="block text-sm font-medium text-gray-700">Kelurahan</label>
+                            <select id="kelurahan" name="kelurahan_id" class="form-select w-full" required>
+                                <option value="">-- Pilih Kelurahan --</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
                         <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat Pengiriman</label>
                         <textarea name="alamat" rows="3" required
@@ -42,7 +73,51 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
+
+    <!-- Script Dinamis Lokal -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const kabupatenSelect = document.getElementById("kabupaten");
+            const kecamatanSelect = document.getElementById("kecamatan");
+            const kelurahanSelect = document.getElementById("kelurahan");
+
+            document.getElementById("provinsi").addEventListener("change", function () {
+                fetch(`/wilayah/kabupaten?provinsi_id=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kabupatenSelect.innerHTML = '<option value="">-- Pilih Kabupaten --</option>';
+                        data.forEach(k => {
+                            kabupatenSelect.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+                        });
+                        kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                        kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+                    });
+            });
+
+            kabupatenSelect.addEventListener("change", function () {
+                fetch(`/wilayah/kecamatan?kabupaten_id=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                        data.forEach(k => {
+                            kecamatanSelect.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+                        });
+                        kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+                    });
+            });
+
+            kecamatanSelect.addEventListener("change", function () {
+                fetch(`/wilayah/kelurahan?kecamatan_id=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+                        data.forEach(k => {
+                            kelurahanSelect.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+                        });
+                    });
+            });
+        });
+    </script>
 </x-app-layout>

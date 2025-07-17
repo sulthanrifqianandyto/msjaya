@@ -7,6 +7,7 @@ use App\Models\Pesanan;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\StatusPesananBerubah;
+use App\Models\Provinsi;
 
 
 
@@ -24,28 +25,38 @@ class PesananController extends Controller
         'item' => 'required|string',
         'kuantitas' => 'required|numeric|min:0.1',
         'alamat' => 'required|string',
+        'provinsi_id' => 'required|exists:provinsis,id',
+        'kabupaten_id' => 'required|exists:kabupatens,id',
+        'kecamatan_id' => 'required|exists:kecamatans,id',
+        'kelurahan_id' => 'required|exists:kelurahans,id',
     ]);
 
     $pesanan = Pesanan::create([
-        'pelanggan_id' => Auth::user()->id_pelanggan, // pakai default karena guard-nya 'web'
-        'item' => $request->item,
-        'kuantitas' => $request->kuantitas,
-        'alamat' => $request->alamat,
-        'status' => 'menunggu',
+        'pelanggan_id'   => auth()->user()->id_pelanggan,
+        'item'           => $request->item,
+        'kuantitas'      => $request->kuantitas,
+        'alamat'         => $request->alamat,
+        'provinsi_id'    => $request->provinsi_id,
+        'kabupaten_id'   => $request->kabupaten_id,
+        'kecamatan_id'   => $request->kecamatan_id,
+        'kelurahan_id'   => $request->kelurahan_id,
+        'status'         => 'menunggu',
     ]);
 
-    $admins = \App\Models\Admin::all(); // Mengambil semua admin
+    $admins = \App\Models\Admin::all();
+    foreach ($admins as $admin) {
+        $admin->notify(new StatusPesananBerubah($pesanan));
+    }
 
-foreach ($admins as $admin) {
-    $admin->notify(new StatusPesananBerubah($pesanan));
+    return redirect()->route('dashboard')->with('success', 'Pesanan berhasil dibuat.');
 }
 
+public function create()
+{
+    $provinsis = Provinsi::all();
+    return view('pelanggan.pesanan.create', compact('provinsis'));
+}
 
-    return redirect()->route('dashboard')->with('success', 'Pesanan berhasil dibuat.');}
-    public function create()
-        {
-            return view('pelanggan.pesanan.create');
-        }
             public function konfirmasi(Request $request, $id)
     {
         $request->validate([
