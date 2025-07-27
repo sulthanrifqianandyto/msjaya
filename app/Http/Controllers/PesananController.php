@@ -8,16 +8,29 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\StatusPesananBerubah;
 use App\Models\Provinsi;
+use App\Models\Kabupaten;
 
 
 
 class PesananController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $pesanan = Pesanan::where('pelanggan_id', auth()->user()->id)->latest()->get();
-    return view('pelanggan.dashboard', compact('pesanan'));
+    $query = Pesanan::query();
+
+    // Filter berdasarkan kabupaten (khusus Jawa Barat)
+    if ($request->filled('kabupaten_id')) {
+        $query->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    // Ambil semua kabupaten dari Provinsi Jawa Barat (ID = 9 di Emsifa)
+    $kabupatens = Kabupaten::where('provinsi_id', 32)->get();
+
+    $pesanan = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.pesanan.index', compact('pesanan', 'kabupatens'));
 }
+
 
     public function store(Request $request)
 {
@@ -53,7 +66,7 @@ class PesananController extends Controller
 
 public function create()
 {
-    $provinsis = Provinsi::all();
+    $provinsis = Provinsi::where('id', 32)->get();
     return view('pelanggan.pesanan.create', compact('provinsis'));
 }
 

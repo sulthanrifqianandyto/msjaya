@@ -30,10 +30,78 @@
                    style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px; background-color: #ffffff;" required>
         </div>
 
+        <div style="margin-bottom: 1.5rem;">
+    <label style="display:block; font-weight: bold; color: #111111;">Alamat Suplier</label>
+
+    <select name="provinsi_id" id="provinsi" class="form-control" required
+            style="width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;">
+        <option value="">Pilih Provinsi</option>
+        @foreach ($provinsis as $provinsi)
+            <option value="{{ $provinsi->id }}">{{ $provinsi->nama }}</option>
+        @endforeach
+    </select>
+
+    <select name="kabupaten_id" id="kabupaten" class="form-control" required
+            style="width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;">
+        <option value="">Pilih Kabupaten</option>
+    </select>
+
+    <select name="kecamatan_id" id="kecamatan" class="form-control" required
+            style="width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;">
+        <option value="">Pilih Kecamatan</option>
+    </select>
+
+    <select name="kelurahan_id" id="kelurahan" class="form-control" required
+            style="width: 100%; padding: 0.5rem; border: 1px solid #A3B18A; border-radius: 6px;">
+        <option value="">Pilih Kelurahan/Desa</option>
+    </select>
+</div>
+
         <button type="submit"
                 style="background-color: #A8FF3E; color: #111111; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight: bold;">
             Simpan
         </button>
+
+       <script>
+document.getElementById('provinsi').addEventListener('change', function () {
+    fetch(`/admin/wilayah/kabupaten?provinsi_id=${this.value}`)
+        .then(res => res.json())
+        .then(data => {
+            let kabupaten = document.getElementById('kabupaten');
+            kabupaten.innerHTML = '<option value="">Pilih Kabupaten</option>';
+            data.forEach(item => kabupaten.innerHTML += `<option value="${item.id}">${item.nama}</option>`);
+
+            // Reset kecamatan & kelurahan
+            document.getElementById('kecamatan').innerHTML = '<option value="">Pilih Kecamatan</option>';
+            document.getElementById('kelurahan').innerHTML = '<option value="">Pilih Kelurahan</option>';
+        });
+});
+
+document.getElementById('kabupaten').addEventListener('change', function () {
+    fetch(`/admin/wilayah/kecamatan?kabupaten_id=${this.value}`)
+        .then(res => res.json())
+        .then(data => {
+            let kecamatan = document.getElementById('kecamatan');
+            kecamatan.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            data.forEach(item => kecamatan.innerHTML += `<option value="${item.id}">${item.nama}</option>`);
+
+            // Reset kelurahan
+            document.getElementById('kelurahan').innerHTML = '<option value="">Pilih Kelurahan</option>';
+        });
+});
+
+document.getElementById('kecamatan').addEventListener('change', function () {
+    fetch(`/admin/wilayah/kelurahan?kecamatan_id=${this.value}`)
+        .then(res => res.json())
+        .then(data => {
+            let kelurahan = document.getElementById('kelurahan');
+            kelurahan.innerHTML = '<option value="">Pilih Kelurahan</option>';
+            data.forEach(item => kelurahan.innerHTML += `<option value="${item.id}">${item.nama}</option>`);
+        });
+});
+</script>
+
+
     </form>
 </div>
 @endsection

@@ -6,16 +6,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Distribusi;
 use App\Models\Pelanggan;
+use App\Models\Kabupaten;
 
 class DistribusiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $distribusi = Distribusi::with('pelanggan')
-        ->orderBy('tanggal_distribusi', 'desc')
-        ->get();
+    $query = Distribusi::with(['pesanan.pelanggan']);
 
-    return view('admin.distribusi.index', compact('distribusi'));
+    // Filter berdasarkan kabupaten (khusus provinsi Jawa Barat = ID 32)
+    if ($request->filled('kabupaten_id')) {
+        $query->whereHas('pesanan', function ($q) use ($request) {
+            $q->where('kabupaten_id', $request->kabupaten_id);
+        });
+    }
+
+    // Ambil kabupaten di provinsi Jawa Barat
+    $kabupatens = Kabupaten::where('provinsi_id', 32)->get();
+
+    $distribusi = $query->orderBy('tanggal_distribusi', 'desc')->get();
+
+    return view('admin.distribusi.index', compact('distribusi', 'kabupatens'));
 }
 
 

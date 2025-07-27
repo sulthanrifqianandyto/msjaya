@@ -18,12 +18,26 @@
         </div>
     @endif
 
+    <form method="GET" action="{{ route('admin.distribusi.index') }}">
+    <label for="kabupaten_id">Filter Kabupaten:</label>
+    <select name="kabupaten_id" id="kabupaten_id">
+        <option value="">-- Semua Kabupaten --</option>
+        @foreach ($kabupatens as $kab)
+            <option value="{{ $kab->id }}" {{ request('kabupaten_id') == $kab->id ? 'selected' : '' }}>
+                {{ $kab->nama }}
+            </option>
+        @endforeach
+    </select>
+    <button type="submit">Terapkan</button>
+</form>
+
+
     <div style="overflow-x:auto;">
         <table style="width: 100%; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden;">
             <thead style="background-color: #14532D; color: white;">
                 <tr>
                     <th style="padding: 1rem; text-align: left;">Nama Pelanggan</th>
-                    <th style="padding: 1rem; text-align: left;">Jumlah</th>
+                    <th style="padding: 1rem; text-align: left;">Kuantitas</th>
                     <th style="padding: 1rem; text-align: left;">Status</th>
                     <th style="padding: 1rem; text-align: left;">Tanggal Distribusi</th>
                     <th style="padding: 1rem; text-align: left;">Aksi</th>
@@ -33,7 +47,7 @@
                 @forelse ($distribusi as $item)
                     <tr style="border-bottom: 1px solid #E0E0E0;">
                         <td style="padding: 1rem;">{{ $item->pelanggan->nama }}</td>
-                        <td style="padding: 1rem;">{{ $item->jumlah }}</td>
+                        <td style="padding: 1rem;">{{ $item->jumlah }} kg</td>
                         <td style="padding: 1rem;">{{ $item->status }}</td>
                         <td style="padding: 1rem;">{{ $item->tanggal_distribusi }}</td>
                         <td style="padding: 1rem;">

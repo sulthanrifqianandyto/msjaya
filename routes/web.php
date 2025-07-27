@@ -17,9 +17,21 @@ use App\Http\Controllers\Admin\MilestoneController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\Admin\AdminPesananController;
 use App\Http\Controllers\NotifikasiController;
+use App\Models\Kabupaten;
+use App\Models\Kecamatan;
+use App\Models\Kelurahan;
 
+Route::get('/get-kabupaten/{provinsi_id}', function ($provinsi_id) {
+    return response()->json(Kabupaten::where('provinsi_id', $provinsi_id)->get());
+});
 
+Route::get('/get-kecamatan/{kabupaten_id}', function ($kabupaten_id) {
+    return response()->json(Kecamatan::where('kabupaten_id', $kabupaten_id)->get());
+});
 
+Route::get('/get-kelurahan/{kecamatan_id}', function ($kecamatan_id) {
+    return response()->json(Kelurahan::where('kecamatan_id', $kecamatan_id)->get());
+});
 
 Route::middleware(['web'])->group(function () {
 
@@ -90,12 +102,18 @@ Route::middleware(['web'])->group(function () {
         Route::post('milestone/{id}/konfirmasi', [MilestoneController::class, 'konfirmasi'])
         ->name('milestone.konfirmasi');
         Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('pesanan.index');
+        Route::get('/pesanan/create', [AdminPesananController::class, 'create'])->name('pesanan.create'); // ← ini
+        Route::post('/pesanan', [AdminPesananController::class, 'store'])->name('pesanan.store'); // ← ini
         Route::post('/pesanan/{id}/konfirmasi', [AdminPesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
         Route::post('/pesanan/{id}/kirim', [AdminPesananController::class, 'kirim'])->name('pesanan.kirim');
         Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
         Route::get('/pesanan/{id}', [AdminPesananController::class, 'show'])->name('pesanan.show');
         Route::get('/notifikasi', [NotifikasiController::class, 'adminIndex'])->name('notifikasi.index');
         Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
+        // Route untuk dropdown lokal dinamis
+        Route::get('/wilayah/kabupaten', [\App\Http\Controllers\WilayahController::class, 'getKabupaten']);
+        Route::get('/wilayah/kecamatan', [\App\Http\Controllers\WilayahController::class, 'getKecamatan']);
+        Route::get('/wilayah/kelurahan', [\App\Http\Controllers\WilayahController::class, 'getKelurahan']);
     });
 
     // OPTIONAL: Debug helper (hapus di production)
