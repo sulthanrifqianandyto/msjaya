@@ -20,6 +20,8 @@ use App\Http\Controllers\NotifikasiController;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
+use App\Http\Controllers\Admin\AdminLaporanController;
+
 
 Route::get('/get-kabupaten/{provinsi_id}', function ($provinsi_id) {
     return response()->json(Kabupaten::where('provinsi_id', $provinsi_id)->get());
@@ -114,6 +116,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/wilayah/kabupaten', [\App\Http\Controllers\WilayahController::class, 'getKabupaten']);
         Route::get('/wilayah/kecamatan', [\App\Http\Controllers\WilayahController::class, 'getKecamatan']);
         Route::get('/wilayah/kelurahan', [\App\Http\Controllers\WilayahController::class, 'getKelurahan']);
+        Route::get('/laporan/pesanan/export-csv', [AdminLaporanController::class, 'exportPesananCSV'])->name('laporan.pesanan.export.csv');
     });
 
     // OPTIONAL: Debug helper (hapus di production)

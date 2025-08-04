@@ -121,21 +121,45 @@
     <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
     <div class="sidebar">
-        <img src="{{ asset('images/logo.png') }}" alt="MS Jaya Logo">
+    <img src="{{ asset('images/logo.png') }}" alt="MS Jaya Logo">
 
-        <a href="{{ route('admin.admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ route('admin.pelanggan.index') }}" class="{{ request()->is('admin/pelanggan*') ? 'active' : '' }}">Pelanggan</a>
+    @php $admin = auth('admin')->user(); @endphp
+
+    {{-- Tersedia untuk semua --}}
+    <a href="{{ route('admin.admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+
+    {{-- === ROLE: ADMIN === --}}
+    @if ($admin && $admin->role === 'admin')
+        <a href="{{ route('admin.pelanggan.index') }}" class="{{ request()->is('admin/pelanggan*') ? 'active' : '' }}">Kelola Pelanggan</a>
+        <a href="{{ route('admin.staff.index') }}" class="{{ request()->is('admin/staff*') ? 'active' : '' }}">Kelola Staff</a>
+        <a href="{{ route('admin.pemilik.index') }}" class="{{ request()->is('admin/pemilik*') ? 'active' : '' }}">Kelola Pemilik</a>
+    @endif
+
+    {{-- === ROLE: STAFF === --}}
+    @if ($admin && $admin->role === 'staff')
         <a href="{{ route('admin.bahanbaku.index') }}" class="{{ request()->is('admin/bahanbaku*') ? 'active' : '' }}">Bahan Baku</a>
         <a href="{{ route('admin.produksi.index') }}" class="{{ request()->is('admin/produksi*') ? 'active' : '' }}">Produksi</a>
         <a href="{{ route('admin.milestone.index') }}" class="{{ request()->is('admin/milestone*') ? 'active' : '' }}">Target</a>
         <a href="{{ route('admin.pesanan.index') }}" class="{{ request()->is('admin/pesanan*') ? 'active' : '' }}">Pesanan</a>
         <a href="{{ route('admin.distribusi.index') }}" class="{{ request()->is('admin/distribusi*') ? 'active' : '' }}">Distribusi</a>
+    @endif
 
-        <form method="POST" action="{{ route('admin.logout') }}">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
-    </div>
+    {{-- === ROLE: PEMILIK === --}}
+    @if ($admin && $admin->role === 'pemilik')
+        <a href="{{ route('admin.laporan.bahanbaku') }}" class="{{ request()->is('admin/laporan/bahanbaku') ? 'active' : '' }}">Laporan Bahan Baku</a>
+        <a href="{{ route('admin.laporan.produksi') }}" class="{{ request()->is('admin/laporan/produksi') ? 'active' : '' }}">Laporan Produksi</a>
+        <a href="{{ route('admin.laporan.milestone') }}" class="{{ request()->is('admin/laporan/milestone') ? 'active' : '' }}">Laporan Target</a>
+        <a href="{{ route('admin.laporan.pesanan') }}" class="{{ request()->is('admin/laporan/pesanan') ? 'active' : '' }}">Laporan Pesanan</a>
+        <a href="{{ route('admin.laporan.distribusi') }}" class="{{ request()->is('admin/laporan/distribusi') ? 'active' : '' }}">Laporan Distribusi</a>
+    @endif
+
+    {{-- Tombol Logout --}}
+    <form method="POST" action="{{ route('admin.logout') }}">
+        @csrf
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
 
     <div class="main-content">
         <div class="card">

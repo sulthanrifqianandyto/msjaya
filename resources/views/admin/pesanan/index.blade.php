@@ -17,6 +17,12 @@
     </a>
 </div>
 
+<a href="{{ route('admin.laporan.pesanan.export.csv') }}"
+   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+   Export Laporan Pesanan (CSV)
+</a>
+
+
 
 <form method="GET" action="{{ route('admin.pesanan.index') }}" class="mb-4">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -48,6 +54,7 @@
                 <th style="padding: 0.75rem; text-align: left;">Item</th>
                 <th style="padding: 0.75rem; text-align: left;">Kuantitas</th>
                 <th style="padding: 0.75rem; text-align: left;">Alamat</th>
+                <th style="padding: 0.75rem; text-align: left;">Estimasi</th>
                 <th style="padding: 0.75rem; text-align: left;">Status</th>
                 <th style="padding: 0.75rem; text-align: left;">Aksi</th>
                 <th style="padding: 0.75rem; text-align: left;">Bukti</th>
@@ -61,6 +68,8 @@
                     <td style="padding: 0.75rem;">{{ $p->item }}</td>
                     <td style="padding: 0.75rem;">{{ $p->kuantitas }} kg</td>
                     <td style="padding: 0.75rem;">{{ $p->alamat }}</td>
+                    <td style="padding: 0.75rem;">{{ $p->estimasi_pengiriman }}</td>
+                    
                     <td style="padding: 0.75rem; text-transform: capitalize;">{{ $p->status }}</td>
                     <td style="padding: 0.75rem;">
                         @if ($p->status === 'menunggu')

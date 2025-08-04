@@ -15,10 +15,27 @@ class Admin extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // tambahkan role di sini
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    // Helper functions (optional tapi sangat berguna)
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPemilik()
+    {
+        return $this->role === 'pemilik';
+    }
+
+    public function isStaff()
+    {
+        return $this->role === 'staff';
+    }
 }
