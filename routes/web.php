@@ -21,6 +21,8 @@ use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Http\Controllers\Admin\AdminLaporanController;
+use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\PemilikController;
 
 
 Route::get('/get-kabupaten/{provinsi_id}', function ($provinsi_id) {
@@ -92,32 +94,58 @@ Route::middleware(['web'])->group(function () {
         Route::post('/register', [RegisteredUserController::class, 'store']);
     });
 
-    // ADMIN SECTION
-    Route::prefix('admin')->as('admin.')->middleware(['auth:admin'])->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    // Group untuk semua admin login
+Route::prefix('admin')->as('admin.')->middleware(['auth:admin'])->group(function () {
+
+    // Dashboard: Semua role Bisa Akses
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // === role ADMIN SAJA ===
+    Route::middleware('role:admin')->group(function () {
         Route::resource('pelanggan', PelangganController::class);
+        Route::resource('staff', \App\Http\Controllers\Admin\StaffController::class);
+        Route::resource('pemilik', \App\Http\Controllers\Admin\PemilikController::class);
+    });
+
+    // === role STAFF & ADMIN ===
+    Route::middleware('role:staff,admin')->group(function () {
         Route::resource('bahanbaku', BahanBakuController::class);
         Route::resource('produksi', ProduksiController::class);
-        Route::resource('distribusi', DistribusiController::class);
         Route::resource('milestone', MilestoneController::class);
         Route::get('milestone/{id}/data', [MilestoneController::class, 'data']);
-        Route::post('milestone/{id}/konfirmasi', [MilestoneController::class, 'konfirmasi'])
-        ->name('milestone.konfirmasi');
+        Route::post('milestone/{id}/konfirmasi', [MilestoneController::class, 'konfirmasi'])->name('milestone.konfirmasi');
+
         Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('pesanan.index');
-        Route::get('/pesanan/create', [AdminPesananController::class, 'create'])->name('pesanan.create'); // ← ini
-        Route::post('/pesanan', [AdminPesananController::class, 'store'])->name('pesanan.store'); // ← ini
+        Route::get('/pesanan/create', [AdminPesananController::class, 'create'])->name('pesanan.create');
+        Route::post('/pesanan', [AdminPesananController::class, 'store'])->name('pesanan.store');
         Route::post('/pesanan/{id}/konfirmasi', [AdminPesananController::class, 'konfirmasi'])->name('pesanan.konfirmasi');
         Route::post('/pesanan/{id}/kirim', [AdminPesananController::class, 'kirim'])->name('pesanan.kirim');
-        Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
         Route::get('/pesanan/{id}', [AdminPesananController::class, 'show'])->name('pesanan.show');
-        Route::get('/notifikasi', [NotifikasiController::class, 'adminIndex'])->name('notifikasi.index');
-        Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
-        // Route untuk dropdown lokal dinamis
-        Route::get('/wilayah/kabupaten', [\App\Http\Controllers\WilayahController::class, 'getKabupaten']);
-        Route::get('/wilayah/kecamatan', [\App\Http\Controllers\WilayahController::class, 'getKecamatan']);
-        Route::get('/wilayah/kelurahan', [\App\Http\Controllers\WilayahController::class, 'getKelurahan']);
+
+        Route::resource('distribusi', DistribusiController::class);
+        Route::post('/konfirmasi-distribusi/{id}', [DistribusiController::class, 'konfirmasi']);
+    });
+
+    // === role PEMILIK SAJA ===
+    Route::middleware('role:pemilik')->group(function () {
+        Route::get('/laporan/bahanbaku', [AdminLaporanController::class, 'bahanbaku'])->name('laporan.bahanbaku');
+        Route::get('/laporan/produksi', [AdminLaporanController::class, 'produksi'])->name('laporan.produksi');
+        Route::get('/laporan/milestone', [AdminLaporanController::class, 'milestone'])->name('laporan.milestone');
+        Route::get('/laporan/pesanan', [AdminLaporanController::class, 'pesanan'])->name('laporan.pesanan');
+        Route::get('/laporan/distribusi', [AdminLaporanController::class, 'distribusi'])->name('laporan.distribusi');
         Route::get('/laporan/pesanan/export-csv', [AdminLaporanController::class, 'exportPesananCSV'])->name('laporan.pesanan.export.csv');
     });
+
+    // Notifikasi & Logout: Semua role Bisa Akses
+    Route::get('/notifikasi', [NotifikasiController::class, 'adminIndex'])->name('notifikasi.index');
+    Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
+
+    // Dropdown wilayah lokal
+    Route::get('/wilayah/kabupaten', [\App\Http\Controllers\WilayahController::class, 'getKabupaten']);
+    Route::get('/wilayah/kecamatan', [\App\Http\Controllers\WilayahController::class, 'getKecamatan']);
+    Route::get('/wilayah/kelurahan', [\App\Http\Controllers\WilayahController::class, 'getKelurahan']);
+});
+
 
     // OPTIONAL: Debug helper (hapus di production)
     Route::get('/check-auth', function () {
