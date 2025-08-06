@@ -14,10 +14,9 @@
     <!-- Styles & Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Custom Styles (optional) -->
     <style>
         body {
-            background-color: #f9fafb; /* warna latar belakang lembut */
+            background-color: #f9fafb;
         }
 
         header.bg-white.shadow {
@@ -32,17 +31,17 @@
         @include('layouts.navigation')
 
         <!-- Page Heading -->
-        @isset($header)
+        @hasSection('header')
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                    @yield('header')
                 </div>
             </header>
-        @endisset
+        @endif
 
         <!-- Page Content -->
         <main class="py-6">
-            {{ $slot }}
+            @yield('content')
         </main>
     </div>
 

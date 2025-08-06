@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BahanBaku;
@@ -14,6 +15,9 @@ class BahanBakuController extends Controller
 {
     public function index(Request $request)
 {
+    if (auth()->user()->role !== 'pemilik' && auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
     $query = BahanBaku::query();
 
     // Filter nama bahan
@@ -153,4 +157,49 @@ class BahanBakuController extends Controller
 
         return redirect()->route('admin.bahanbaku.index')->with('success', 'Data berhasil dihapus.');
     }
+
+    public function exportCsv(Request $request)
+{
+    $query = BahanBaku::query();
+
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('tanggal_masuk', [$request->start_date, $request->end_date]);
+    }
+
+    if ($request->filled('kabupaten_id')) {
+        $query->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    $data = $query->get();
+
+    $filename = "laporan_bahan_baku.csv";
+    $headers = [
+        "Content-type"        => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma"              => "no-cache",
+        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+        "Expires"             => "0"
+    ];
+
+    $columns = ['ID', 'Nama Bahan', 'Stok', 'Tanggal Masuk', 'Alamat Suplier'];
+
+    $callback = function () use ($data, $columns) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, $columns);
+
+        foreach ($data as $bahan) {
+            fputcsv($file, [
+                $bahan->id_bahan,
+                $bahan->nama_bahan,
+                $bahan->stok,
+                $bahan->tanggal_masuk,
+                $bahan->alamat_suplier
+            ]);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
 }

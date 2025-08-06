@@ -17,6 +17,9 @@ class AdminPesananController extends Controller
 {
     public function index(Request $request)
 {
+    if (auth()->user()->role !== 'pemilik' && auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
     $query = Pesanan::with('pelanggan');
 
     // Filter berdasarkan kabupaten (khusus Jawa Barat, ID = 32)

@@ -20,7 +20,7 @@ use App\Http\Controllers\NotifikasiController;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
-use App\Http\Controllers\Admin\AdminLaporanController;
+use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\PemilikController;
 
@@ -101,14 +101,19 @@ Route::prefix('admin')->as('admin.')->middleware(['auth:admin'])->group(function
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // === role ADMIN SAJA ===
-    Route::middleware('role:admin')->group(function () {
-        Route::resource('pelanggan', PelangganController::class);
-        Route::resource('staff', \App\Http\Controllers\Admin\StaffController::class);
-        Route::resource('pemilik', \App\Http\Controllers\Admin\PemilikController::class);
-    });
+Route::middleware(['auth'])->group(function () {
+    Route::resource('pelanggan', PelangganController::class);
+    Route::resource('staff', StaffController::class);
+    Route::get('/admin/staff/{staff}/edit', [StaffController::class, 'edit'])->name('admin.staff.edit');
+    Route::put('/admin/staff/{staff}', [StaffController::class, 'update'])->name('admin.staff.update');
+    Route::resource('pemilik', PemilikController::class);
+    Route::get('/admin/pemilik/{pemilik}/edit', [PemilikController::class, 'edit'])->name('admin.pemilik.edit');
+    Route::put('/admin/pemilik/{pemilik}', [PemilikController::class, 'update'])->name('admin.pemilik.update');
+});
+
 
     // === role STAFF & ADMIN ===
-    Route::middleware('role:staff,admin')->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::resource('bahanbaku', BahanBakuController::class);
         Route::resource('produksi', ProduksiController::class);
         Route::resource('milestone', MilestoneController::class);
@@ -127,13 +132,15 @@ Route::prefix('admin')->as('admin.')->middleware(['auth:admin'])->group(function
     });
 
     // === role PEMILIK SAJA ===
-    Route::middleware('role:pemilik')->group(function () {
-        Route::get('/laporan/bahanbaku', [AdminLaporanController::class, 'bahanbaku'])->name('laporan.bahanbaku');
-        Route::get('/laporan/produksi', [AdminLaporanController::class, 'produksi'])->name('laporan.produksi');
-        Route::get('/laporan/milestone', [AdminLaporanController::class, 'milestone'])->name('laporan.milestone');
-        Route::get('/laporan/pesanan', [AdminLaporanController::class, 'pesanan'])->name('laporan.pesanan');
-        Route::get('/laporan/distribusi', [AdminLaporanController::class, 'distribusi'])->name('laporan.distribusi');
-        Route::get('/laporan/pesanan/export-csv', [AdminLaporanController::class, 'exportPesananCSV'])->name('laporan.pesanan.export.csv');
+    Route::middleware('auth')->group(function () {
+        Route::get('/laporan/bahanbaku', [LaporanController::class, 'bahanbaku'])->name('laporan.bahanbaku');
+        Route::get('/laporan/bahanbaku/export-csv', [BahanBakuController::class, 'exportCsv'])->name('laporan.bahanbaku.export_csv');
+
+        Route::get('/laporan/produksi', [LaporanController::class, 'produksi'])->name('laporan.produksi');
+        Route::get('/laporan/milestone', [LaporanController::class, 'milestone'])->name('laporan.milestone');
+        Route::get('/laporan/pesanan', [LaporanController::class, 'pesanan'])->name('laporan.pesanan');
+        Route::get('/laporan/distribusi', [LaporanController::class, 'distribusi'])->name('laporan.distribusi');
+        Route::get('/laporan/pesanan/export-csv', [LaporanController::class, 'exportPesananCSV'])->name('laporan.pesanan.export.csv');
     });
 
     // Notifikasi & Logout: Semua role Bisa Akses

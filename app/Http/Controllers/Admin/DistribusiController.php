@@ -10,8 +10,13 @@ use App\Models\Kabupaten;
 
 class DistribusiController extends Controller
 {
+    
     public function index(Request $request)
 {
+    if (auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
+
     $query = Distribusi::with(['pesanan.pelanggan']);
 
     // Filter berdasarkan kabupaten (khusus provinsi Jawa Barat = ID 32)

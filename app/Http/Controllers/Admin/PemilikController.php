@@ -11,6 +11,9 @@ class PemilikController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role !== 'admin') {
+        abort(403, 'Akses ditolak.');
+    }
         $pemiliks = Admin::where('role', 'pemilik')->get();
         return view('admin.pemilik.index', compact('pemiliks'));
     }
@@ -37,6 +40,33 @@ class PemilikController extends Controller
 
         return redirect()->route('admin.pemilik.index')->with('success', 'Pemilik berhasil ditambahkan.');
     }
+    public function edit($id)
+{
+    // Ambil data admin dengan role 'pemilik' dan id_admin yang sesuai
+    $pemilik = Admin::where('role', 'pemilik')->where('id_admin', $id)->firstOrFail();
+    return view('admin.pemilik.edit', compact('pemilik'));
+}
+    public function update(Request $request, $id)
+{
+    $pemilik = Admin::where('role', 'pemilik')->where('id_admin', $id)->firstOrFail();
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:admins,email,' . $pemilik->id_admin . ',id_admin',
+        'password' => 'nullable|string|min:8|confirmed',
+    ]);
+
+    $pemilik->name = $request->name;
+    $pemilik->email = $request->email;
+
+    if ($request->filled('password')) {
+        $pemilik->password = Hash::make($request->password);
+    }
+
+    $pemilik->save();
+
+    return redirect()->route('admin.pemilik.index')->with('success', 'Data pemilik berhasil diperbarui.');
+}
 
     public function destroy($id)
     {

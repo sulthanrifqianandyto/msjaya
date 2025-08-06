@@ -11,6 +11,9 @@ class PelangganController extends Controller
 
     public function index()
 {
+    if (auth()->user()->role !== 'admin') {
+        abort(403, 'Akses ditolak.');
+    }
     $pelanggan = \App\Models\Pelanggan::all();
     return view('admin.pelanggan.index', compact('pelanggan'));
 }

@@ -10,6 +10,9 @@ class ProduksiController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
                 $produksi = \App\Models\Produksi::orderBy('created_at', 'desc')->get();
         return view('admin.produksi.index', compact('produksi'));
     }

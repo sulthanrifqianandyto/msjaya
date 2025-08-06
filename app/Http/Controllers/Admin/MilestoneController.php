@@ -12,6 +12,9 @@ class MilestoneController extends Controller
     // Tampilkan semua milestone
     public function index()
     {
+        if (auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
         $milestones = Milestone::orderBy('id', 'asc')->get();
         return view('admin.milestone.index', compact('milestones'));
     }
