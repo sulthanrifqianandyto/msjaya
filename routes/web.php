@@ -135,9 +135,16 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/laporan/bahanbaku', [LaporanController::class, 'bahanbaku'])->name('laporan.bahanbaku');
         Route::get('/laporan/bahanbaku/export-csv', [BahanBakuController::class, 'exportCsv'])->name('laporan.bahanbaku.export_csv');
+        Route::get('/laporan/bahanbaku/export-pdf', [BahanBakuController::class, 'exportPdf'])->name('laporan.bahanbaku.export_pdf');
 
-        Route::get('/laporan/produksi', [LaporanController::class, 'produksi'])->name('laporan.produksi');
-        Route::get('/laporan/milestone', [LaporanController::class, 'milestone'])->name('laporan.milestone');
+        Route::get('/laporan/produksi', [ProduksiController::class, 'laporan'])->name('laporan.produksi');
+        Route::get('/laporan/produksi/export-csv', [ProduksiController::class, 'exportCsv'])->name('laporan.produksi.export_csv');
+        Route::get('/laporan/produksi/export-pdf', [ProduksiController::class, 'exportPdf'])->name('laporan.produksi.export_pdf');
+
+        Route::get('/laporan/milestone', [MilestoneController::class, 'laporan'])->name('laporan.milestone');
+        Route::get('/laporan/milestone/export-csv', [MilestoneController::class, 'exportCsv'])->name('laporan.milestone.export_csv');
+        Route::get('/laporan/milestone/export-pdf', [MilestoneController::class, 'exportPdf'])->name('laporan.milestone.export_pdf');
+
         Route::get('/laporan/pesanan', [LaporanController::class, 'pesanan'])->name('laporan.pesanan');
         Route::get('/laporan/distribusi', [LaporanController::class, 'distribusi'])->name('laporan.distribusi');
         Route::get('/laporan/pesanan/export-csv', [LaporanController::class, 'exportPesananCSV'])->name('laporan.pesanan.export.csv');

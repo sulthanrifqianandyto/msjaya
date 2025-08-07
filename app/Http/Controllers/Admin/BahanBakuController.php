@@ -10,6 +10,8 @@ use App\Models\Provinsi;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class BahanBakuController extends Controller
 {
@@ -160,46 +162,92 @@ class BahanBakuController extends Controller
 
     public function exportCsv(Request $request)
 {
-    $query = BahanBaku::query();
+    $fileName = 'laporan_bahan_baku.csv';
 
-    if ($request->filled('start_date') && $request->filled('end_date')) {
-        $query->whereBetween('tanggal_masuk', [$request->start_date, $request->end_date]);
-    }
+    $bahanBakus = BahanBaku::with(['provinsi', 'kabupaten', 'kecamatan', 'kelurahan'])
+                    ->when($request->filled('tanggal_awal') && $request->filled('tanggal_akhir'), function ($query) use ($request) {
+                        $query->whereBetween('tanggal_masuk', [$request->tanggal_awal, $request->tanggal_akhir]);
+                    })
+                    ->when($request->filled('kabupaten_id'), function ($query) use ($request) {
+                        $query->where('kabupaten_id', $request->kabupaten_id);
+                    })
+                    ->get();
 
-    if ($request->filled('kabupaten_id')) {
-        $query->where('kabupaten_id', $request->kabupaten_id);
-    }
-
-    $data = $query->get();
-
-    $filename = "laporan_bahan_baku.csv";
     $headers = [
-        "Content-type"        => "text/csv",
-        "Content-Disposition" => "attachment; filename=$filename",
-        "Pragma"              => "no-cache",
-        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-        "Expires"             => "0"
+        'Content-type' => 'text/csv',
+        'Content-Disposition' => "attachment; filename=$fileName",
+        'Pragma' => 'no-cache',
+        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        'Expires' => '0',
     ];
 
-    $columns = ['ID', 'Nama Bahan', 'Stok', 'Tanggal Masuk', 'Alamat Suplier'];
+    $columns = [
+        'ID Bahan',
+        'Nama Bahan',
+        'Stok',
+        'Tanggal Masuk',
+        'Alamat Supplier',
+        'Provinsi ID',
+        'Kabupaten ID',
+        'Kecamatan ID',
+        'Kelurahan ID',
+        'Created At',
+        'Updated At'
+    ];
 
-    $callback = function () use ($data, $columns) {
+    $callback = function () use ($bahanBakus, $columns) {
         $file = fopen('php://output', 'w');
         fputcsv($file, $columns);
 
-        foreach ($data as $bahan) {
+        foreach ($bahanBakus as $item) {
+            $alamat = $item->alamat_supplier;
+            if ($item->kelurahan || $item->kecamatan || $item->kabupaten || $item->provinsi) {
+                $alamat .= ', ' .
+                    ($item->kelurahan->nama ?? '') . ', ' .
+                    ($item->kecamatan->nama ?? '') . ', ' .
+                    ($item->kabupaten->nama ?? '') . ', ' .
+                    ($item->provinsi->nama ?? '');
+            }
+
             fputcsv($file, [
-                $bahan->id_bahan,
-                $bahan->nama_bahan,
-                $bahan->stok,
-                $bahan->tanggal_masuk,
-                $bahan->alamat_suplier
+                $item->id,
+                $item->nama_bahan,
+                $item->stok,
+                $item->tanggal_masuk,
+                $alamat,
+                $item->provinsi_id,
+                $item->kabupaten_id,
+                $item->kecamatan_id,
+                $item->kelurahan_id,
+                $item->created_at,
+                $item->updated_at
             ]);
         }
 
         fclose($file);
     };
 
-    return response()->stream($callback, 200, $headers);
+    return Response::stream($callback, 200, $headers);
 }
+public function exportPdf(Request $request)
+{
+    $bahanBakus = BahanBaku::query();
+
+    // Jika ada filter tanggal
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $bahanBakus->whereBetween('tanggal_masuk', [$request->start_date, $request->end_date]);
+    }
+
+    // Jika ada filter kabupaten
+    if ($request->filled('kabupaten_id')) {
+        $bahanBakus->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    $bahanBakus = $bahanBakus->get();
+
+    $pdf = Pdf::loadView('admin.laporan.bahanbaku_pdf', compact('bahanBakus'));
+return $pdf->download('laporan_bahan_baku.pdf');
+
+}
+
 }

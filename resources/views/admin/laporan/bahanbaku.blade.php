@@ -5,7 +5,10 @@
 @section('content')
 <h2 style="margin-bottom: 1rem; color: #14532D;">Laporan Bahan Baku</h2>
 
-<a href="{{ route('admin.laporan.bahanbaku.export_csv', request()->all()) }}" class="btn btn-secondary">Export CSV</a>
+<div style="margin-bottom: 1rem;">
+    <a href="{{ route('admin.laporan.bahanbaku.export_csv', request()->all()) }}" class="btn btn-secondary">Export CSV</a>
+    <a href="{{ route('admin.laporan.bahanbaku.export_pdf', request()->all()) }}" class="btn btn-danger" target="_blank">Export PDF</a>
+</div>
 
 <div style="overflow-x:auto;">
     <table style="width: 100%; border-collapse: collapse; background-color: #FAF9F6; color: #111111;">

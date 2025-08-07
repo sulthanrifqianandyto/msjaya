@@ -136,5 +136,18 @@ class MilestoneController extends Controller
     return redirect()->back()->with('success', 'Milestone berhasil dikonfirmasi.');
 }
 
+public function laporan()
+{
+    if (auth()->user()->role !== 'staff') {
+        abort(403, 'Akses ditolak.');
+    }
+
+    $milestones = Milestone::with(['produksi' => function ($query) {
+        $query->select('id', 'stok', 'tanggal_produksi', 'milestone_id');
+    }])->get();
+
+    return view('admin.milestone.laporan', compact('milestones'));
+}
+
 }
 
