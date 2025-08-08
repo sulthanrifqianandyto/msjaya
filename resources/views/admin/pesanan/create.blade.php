@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const kecamatan = document.getElementById('kecamatan');
     const kelurahan = document.getElementById('kelurahan');
 
+    const baseUrl = '{{ url('/') }}'; // base path untuk request
+
     provinsi.addEventListener('change', function () {
         const provinsiId = this.value;
         kabupaten.innerHTML = '<option value="">-- Pilih Kabupaten --</option>';
@@ -109,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         kelurahan.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
         if (provinsiId) {
-            fetch(`/wilayah/kabupaten?provinsi_id=${provinsiId}`)
+            fetch(`${baseUrl}/wilayah/kabupaten?provinsi_id=${provinsiId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         kelurahan.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
         if (kabupatenId) {
-            fetch(`/wilayah/kecamatan?kabupaten_id=${kabupatenId}`)
+            fetch(`${baseUrl}/wilayah/kecamatan?kabupaten_id=${kabupatenId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
@@ -140,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
         kelurahan.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
         if (kecamatanId) {
-            fetch(`/wilayah/kelurahan?kecamatan_id=${kecamatanId}`)
+            fetch(`${baseUrl}/wilayah/kelurahan?kecamatan_id=${kecamatanId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
@@ -151,4 +153,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
 @endsection

@@ -27,9 +27,14 @@
         <tbody>
             @forelse ($milestones as $i => $milestone)
                 @php
-                    $totalProduksi = $milestone->produksi->sum('stok');
-                    $pencapaian = $milestone->target > 0 ? round(($totalProduksi / $milestone->target) * 100, 2) : 0;
-                @endphp
+    $totalProduksi = \App\Models\Produksi::whereBetween('tanggal_produksi', [
+        $milestone->tanggal_mulai,
+        $milestone->tanggal_selesai,
+    ])->sum('stok');
+
+    $pencapaian = $milestone->target > 0 ? round(($totalProduksi / $milestone->target) * 100, 2) : 0;
+@endphp
+
                 <tr style="border-bottom: 1px solid #A3B18A;">
                     <td style="padding: 0.75rem;">{{ $i + 1 }}</td>
                     <td style="padding: 0.75rem;">{{ $milestone->nama }}</td>

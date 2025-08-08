@@ -17,13 +17,6 @@
     </a>
 </div>
 
-<a href="{{ route('admin.laporan.pesanan.export.csv') }}"
-   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-   Export Laporan Pesanan (CSV)
-</a>
-
-
-
 <form method="GET" action="{{ route('admin.pesanan.index') }}" class="mb-4">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 

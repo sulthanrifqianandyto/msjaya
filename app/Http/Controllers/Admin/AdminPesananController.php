@@ -10,6 +10,10 @@ use App\Notifications\StatusPesananBerubah;
 use App\Models\Kabupaten;
 use App\Models\Provinsi;
 use App\Models\Pelanggan;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 
 
@@ -121,5 +125,90 @@ public function store(Request $request)
     return redirect()->route('admin.pesanan.index')->with('success', 'Pesanan berhasil dibuat.');
 }
 
+public function laporan(Request $request)
+{
+    if (auth()->user()->role !== 'pemilik') {
+        abort(403, 'Akses ditolak.');
+    }
+
+    $query = Pesanan::with('pelanggan');
+
+    if ($request->filled('kabupaten_id')) {
+        $query->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+        $query->whereBetween('created_at', [$request->tanggal_mulai, $request->tanggal_selesai]);
+    }
+
+    $kabupatens = Kabupaten::where('provinsi_id', 32)->get();
+    $pesanan = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.laporan.pesanan', compact('pesanan', 'kabupatens'));
+}
+
+public function exportCsv(Request $request)
+{
+    $query = Pesanan::with('pelanggan');
+
+    if ($request->filled('kabupaten_id')) {
+        $query->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+        $query->whereBetween('created_at', [$request->tanggal_mulai, $request->tanggal_selesai]);
+    }
+
+    $pesanan = $query->orderBy('created_at', 'desc')->get();
+
+    $filename = 'laporan_pesanan_' . now()->format('Ymd_His') . '.csv';
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => "attachment; filename=\"$filename\"",
+    ];
+
+    $callback = function () use ($pesanan) {
+        $handle = fopen('php://output', 'w');
+        fputcsv($handle, [
+            'ID', 'Nama Pelanggan', 'Item', 'Kuantitas', 'Alamat',
+            'Status', 'Tanggal Pesanan'
+        ]);
+
+        foreach ($pesanan as $p) {
+            fputcsv($handle, [
+                $p->id_pesanan,
+                optional($p->pelanggan)->nama,
+                $p->item,
+                $p->kuantitas,
+                $p->alamat,
+                ucfirst($p->status),
+                $p->created_at->format('Y-m-d'),
+            ]);
+        }
+
+        fclose($handle);
+    };
+
+    return Response::stream($callback, 200, $headers);
+}
+
+public function exportPdf(Request $request)
+{
+    $query = Pesanan::with('pelanggan');
+
+    if ($request->filled('kabupaten_id')) {
+        $query->where('kabupaten_id', $request->kabupaten_id);
+    }
+
+    if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+        $query->whereBetween('created_at', [$request->tanggal_mulai, $request->tanggal_selesai]);
+    }
+
+    $pesanan = $query->orderBy('created_at', 'desc')->get();
+
+    $pdf = Pdf::loadView('admin.laporan.pesanan_pdf', compact('pesanan'))->setPaper('a4', 'landscape');
+    return $pdf->download('laporan_pesanan_' . now()->format('Ymd_His') . '.pdf');
+}
 
 }
