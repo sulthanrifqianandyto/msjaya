@@ -5,12 +5,6 @@
 @section('content')
     <h2 style="color: #14532D; margin-bottom: 1.5rem;">Data Distribusi</h2>
 
-    <div style="margin-bottom: 1.5rem; text-align: right;">
-        <a href="{{ route('admin.distribusi.create') }}"
-           style="background-color: #A8FF3E; color: #111111; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: bold;">
-            + Tambah Distribusi
-        </a>
-    </div>
 
     @if (session('success'))
         <div style="background-color: #DCFCE7; color: #14532D; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem;">
@@ -51,10 +45,7 @@
                         <td style="padding: 1rem;">{{ $item->status }}</td>
                         <td style="padding: 1rem;">{{ $item->tanggal_distribusi }}</td>
                         <td style="padding: 1rem;">
-                            <a href="{{ route('admin.distribusi.edit', $item->id_distribusi) }}"
-                            style="color: #1B5E20; font-weight: bold; margin-right: 1rem; text-decoration: none;">
-                                Edit
-                            </a>
+                            
                             <form method="POST" action="{{ route('admin.distribusi.destroy', $item->id_distribusi) }}" style="display:inline;">
                                 @csrf
                                 @method('DELETE')

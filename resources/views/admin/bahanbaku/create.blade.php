@@ -64,7 +64,7 @@
 
        <script>
 document.getElementById('provinsi').addEventListener('change', function () {
-    fetch(`/admin/wilayah/kabupaten?provinsi_id=${this.value}`)
+    fetch(`/wilayah/kabupaten?provinsi_id=${this.value}`)
         .then(res => res.json())
         .then(data => {
             let kabupaten = document.getElementById('kabupaten');
@@ -78,7 +78,7 @@ document.getElementById('provinsi').addEventListener('change', function () {
 });
 
 document.getElementById('kabupaten').addEventListener('change', function () {
-    fetch(`/admin/wilayah/kecamatan?kabupaten_id=${this.value}`)
+    fetch(`/wilayah/kecamatan?kabupaten_id=${this.value}`)
         .then(res => res.json())
         .then(data => {
             let kecamatan = document.getElementById('kecamatan');
@@ -91,7 +91,7 @@ document.getElementById('kabupaten').addEventListener('change', function () {
 });
 
 document.getElementById('kecamatan').addEventListener('change', function () {
-    fetch(`/admin/wilayah/kelurahan?kecamatan_id=${this.value}`)
+    fetch(`/wilayah/kelurahan?kecamatan_id=${this.value}`)
         .then(res => res.json())
         .then(data => {
             let kelurahan = document.getElementById('kelurahan');
@@ -100,7 +100,6 @@ document.getElementById('kecamatan').addEventListener('change', function () {
         });
 });
 </script>
-
 
     </form>
 </div>

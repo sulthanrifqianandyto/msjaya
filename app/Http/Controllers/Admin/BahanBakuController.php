@@ -48,10 +48,11 @@ class BahanBakuController extends Controller
 
 
     public function create()
-    {
-        $provinsis = Provinsi::all();
+{
+    // Ambil hanya provinsi dengan id = 32
+    $provinsis = Provinsi::where('id', 32)->get();
     return view('admin.bahanbaku.create', compact('provinsis'));
-    }
+}
 
     public function store(Request $request)
 {
@@ -92,16 +93,16 @@ class BahanBakuController extends Controller
 {
     $bahanbaku = BahanBaku::findOrFail($id);
 
-    // Ambil semua provinsi untuk dropdown pertama
-    $provinsis = Provinsi::all();
+    // Ambil hanya provinsi dengan id = 32
+    $provinsis = Provinsi::where('id', 32)->get();
 
-    // Ambil kabupaten sesuai dengan provinsi_id bahan baku
+    // Ambil kabupaten sesuai provinsi_id bahan baku
     $kabupatens = Kabupaten::where('provinsi_id', $bahanbaku->provinsi_id)->get();
 
-    // Ambil kecamatan sesuai dengan kabupaten_id bahan baku
+    // Ambil kecamatan sesuai kabupaten_id bahan baku
     $kecamatans = Kecamatan::where('kabupaten_id', $bahanbaku->kabupaten_id)->get();
 
-    // Ambil kelurahan sesuai dengan kecamatan_id bahan baku
+    // Ambil kelurahan sesuai kecamatan_id bahan baku
     $kelurahans = Kelurahan::where('kecamatan_id', $bahanbaku->kecamatan_id)->get();
 
     return view('admin.bahanbaku.edit', compact(
