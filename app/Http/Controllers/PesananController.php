@@ -50,9 +50,9 @@ class PesananController extends Controller
         $kabupaten = Kabupaten::find($request->kabupaten_id);
         $nama_kabupaten = $kabupaten?->nama;
 
-        $zona1 = ['KABUPATEN INDRAMAYU', 'Cirebon', 'Majalengka', 'Subang'];
-        $zona2 = ['Sumedang', 'Kuningan', 'Bandung', 'Cimahi', 'Purwakarta'];
-        $zona3 = ['Bogor', 'Bekasi', 'Sukabumi', 'Cianjur', 'Garut', 'Tasikmalaya', 'Banjar', 'Pangandaran'];
+        $zona1 = ['KABUPATEN INDRAMAYU', 'KABUPATEN CIREBON', 'KABUPATEN MAJALENGKA', 'KABUPATEN SUBANG'];
+        $zona2 = ['KABUPATEN SUMEDANG', 'KABUPATEN KUNINGAN', 'KABUPATEN BANDUNG', 'KABUPATEN CIMAHI', 'KABUPATEN PURWAKARTA'];
+        $zona3 = ['KABUPATEN BOGOR', 'KABUPATEN BEKASI', 'KABUPATEN SUKABUMI', 'KABUPATEN CIANJUR', 'KABUPATEN GARUT', 'KABUPATEN TASIKMALAYA', 'KABUPATEN BANJAR', 'KABUPATEN PANGANDARAN'];
 
         if (in_array($nama_kabupaten, $zona1)) {
             $estimasi = '1-2 Hari';

@@ -69,7 +69,6 @@ class ProduksiController extends Controller
 {
     $produksi = \App\Models\Produksi::query();
 
-    // Filter tanggal (opsional)
     if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
         $produksi->whereBetween('tanggal', [$request->tanggal_awal, $request->tanggal_akhir]);
     }
@@ -101,7 +100,6 @@ class ProduksiController extends Controller
 
     $callback = function () use ($produksi) {
         $file = fopen('php://output', 'w');
-        // Header kolom
         fputcsv($file, ['ID', 'Nama Produk', 'Stok', 'Tanggal Produksi', 'Dibuat']);
 
         foreach ($produksi as $row) {
